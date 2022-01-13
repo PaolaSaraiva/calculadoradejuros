@@ -10,7 +10,7 @@ function adicionar (e){
 
     const recebivel={
         nome: nome.value,
-        data: data.value,
+        data: new Date(data.value.replace(/-/g, '\/')),
         valor: parseFloat(valor.value),
     }
 
@@ -44,9 +44,9 @@ function carregarTabela (recebiveis){
         const dadoDaTabelaData = document.createElement('td')
         const dadoDaTabelaValor = document.createElement('td')
 
-        dadoDaTabelaNome.innerHTML = recebivel.nome
-        dadoDaTabelaData.innerHTML = recebivel.data
-        dadoDaTabelaValor.innerHTML = recebivel.valor
+        dadoDaTabelaNome.innerHTML = recebivel.nome ?? ""
+        dadoDaTabelaData.innerHTML = recebivel.data?.toLocaleDateString() ?? ""
+        dadoDaTabelaValor.innerHTML = `R$ ${recebivel.valor}`
 
         novaLinhaDaTabela.appendChild(dadoDaTabelaNome)
         novaLinhaDaTabela.appendChild(dadoDaTabelaData)
@@ -74,7 +74,7 @@ function implementarJuros (){
 
             return {
                 nome: recebivel.nome,
-                data: recebivel.data,
+                data: new Date(recebivel.data),
                 valor: valorComJuros
             }
         }
@@ -90,17 +90,17 @@ function pesquisar (e){
     const dataDeInicio = document.getElementById ("dataDeInicio")
     const dataDeFim = document.getElementById ("dataDeFim")
     const valorMinimo = document.getElementById ("valorMinimo")
-    const ValorMaximo = document.getElementById ("valorMaximo")
+    const valorMaximo = document.getElementById ("valorMaximo")
     const recebiveiPesquisados = recebiveis.filter((recebivel)=>{
-        const recebivelestadentrodorangededata = dataDeInicio.value < recebivel.data && dataDeFim > recebivel.data
-        const recebivelestadentrodorangedevalor = valorMinimo.value < recebivel.valor && ValorMaximo.value > recebivel.valor
+        const recebivelestadentrodorangededata = new Date(dataDeInicio.value.replace(/-/g, '\/')) < recebivel.data && new Date(dataDeFim.value.replace(/-/g, '\/')) > recebivel.data
+        const recebivelestadentrodorangedevalor = Number(valorMinimo.value) < recebivel.valor && Number(valorMaximo.value) > recebivel.valor
         return recebivelestadentrodorangededata && recebivelestadentrodorangedevalor
     })
     carregarTabelaDePesquisa(recebiveiPesquisados)
 }
 function carregarTabelaDePesquisa (recebiveis){
 
-    tabela.innerHTML = `
+    tabeladepesquisa.innerHTML = `
         <tr>
             <th>Resultado De Pesquisa</th>
         </tr>
@@ -114,8 +114,8 @@ function carregarTabelaDePesquisa (recebiveis){
         const dadoDaTabelaData = document.createElement('td')
         const dadoDaTabelaValor = document.createElement('td')
 
-        dadoDaTabelaNome.innerHTML = recebivel.nome
-        dadoDaTabelaData.innerHTML = recebivel.data
+        dadoDaTabelaNome.innerHTML = recebivel.nome  
+        dadoDaTabelaData.innerHTML = recebivel.data.toLocaleDateString()
         dadoDaTabelaValor.innerHTML = recebivel.valor
 
         novaLinhaDaTabela.appendChild(dadoDaTabelaNome)
@@ -124,4 +124,33 @@ function carregarTabelaDePesquisa (recebiveis){
 
         tabeladepesquisa.appendChild(novaLinhaDaTabela)
     }
+}
+//funções para agrupar e mostrar o resultados (atividade de reduce)
+function agruparPorClientes() {
+    const recebiveisAgrupadosPorCliente = recebiveis.reduce ((acc,recebivel)=>{
+        const clienteExistenteNoAcc = acc.find ((cliente)=> cliente.nome==recebivel.nome)
+        if (clienteExistenteNoAcc){
+            clienteExistenteNoAcc.valor=Number(clienteExistenteNoAcc.valor)+Number(recebivel.valor)
+            const accSemClienteExistente =acc.filter((cliente)=> cliente.nome != recebivel.nome)
+            return [...accSemClienteExistente,clienteExistenteNoAcc]
+        }
+        recebivel.data=null
+        return [...acc, recebivel]
+    },[])
+
+    carregarTabela(recebiveisAgrupadosPorCliente)
+}
+
+function agruparPorDatavenc(){
+    const recebiveisAgrupadosPorData = recebiveis.reduce ((acc,recebivel)=>{
+        const dataExistenteNoAcc = acc.find ((cliente)=> cliente.data==recebivel.data)
+        if (dataExistenteNoAcc){
+            dataExistenteNoAcc.valor=Number(dataExistenteNoAcc.valor)+Number(recebivel.valor)
+            const accSemDataExistente =acc.filter((data)=> data.data!==recebivel.data)
+            return [...accSemDataExistente,dataExistenteNoAcc]
+        }
+        recebivel.nome=null
+        return [...acc, recebivel]
+    },[])
+    carregarTabela(recebiveisAgrupadosPorData)
 }
