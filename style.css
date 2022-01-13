@@ -1,0 +1,29 @@
+
+body{
+    display: flex;
+    flex-direction:column;
+    align-items: center;
+    justify-content: center;
+}
+
+.tabelas{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 5px solid rgb(58, 57, 57);
+    border-radius: 16px;
+    background-color: rgb(58, 57, 57);
+    width: 50%;
+    height: 600px;
+}
+th,td{
+    color: white;
+}
+input{
+    border: 1px solid black;
+    border-radius: 16px;
+}
+input::placeholder{
+    text-align: center;
+}
+

@@ -2,6 +2,7 @@ const nome=document.getElementById("nome")
 const data=document.getElementById("data")
 const valor=document.getElementById("valor")
 const tabela=document.getElementById("tabela")
+const tabeladepesquisa=document.getElementById("tabelaPesquisa")
 let recebiveis=[]
 
 function adicionar (e){
@@ -29,11 +30,10 @@ function carregarTabela (recebiveis){
     // Reseta a tabela
     tabela.innerHTML = `
         <tr>
-            <th>Nome</th>
-            <th>Vencimento</th>
-            <th>Valor</th>
+            <th>Valor salvo</th>
         </tr>
     `
+
     
     // Adiciona os valores na tabela
     for(let i = 0; i < recebiveis.length; i++) {
@@ -83,4 +83,45 @@ function implementarJuros (){
     })
 
     carregarTabela(recebiveisComJuros)
+}
+//cria uma função para pesquisar os recebiveis
+function pesquisar (e){
+    e.preventDefault()
+    const dataDeInicio = document.getElementById ("dataDeInicio")
+    const dataDeFim = document.getElementById ("dataDeFim")
+    const valorMinimo = document.getElementById ("valorMinimo")
+    const ValorMaximo = document.getElementById ("valorMaximo")
+    const recebiveiPesquisados = recebiveis.filter((recebivel)=>{
+        const recebivelestadentrodorangededata = dataDeInicio.value < recebivel.data && dataDeFim > recebivel.data
+        const recebivelestadentrodorangedevalor = valorMinimo.value < recebivel.valor && ValorMaximo.value > recebivel.valor
+        return recebivelestadentrodorangededata && recebivelestadentrodorangedevalor
+    })
+    carregarTabelaDePesquisa(recebiveiPesquisados)
+}
+function carregarTabelaDePesquisa (recebiveis){
+
+    tabela.innerHTML = `
+        <tr>
+            <th>Resultado De Pesquisa</th>
+        </tr>
+    `
+    // Adiciona os valores na tabela
+    for(let i = 0; i < recebiveis.length; i++) {
+        const recebivel = recebiveis[i]
+
+        const novaLinhaDaTabela = document.createElement('tr')
+        const dadoDaTabelaNome = document.createElement('td')
+        const dadoDaTabelaData = document.createElement('td')
+        const dadoDaTabelaValor = document.createElement('td')
+
+        dadoDaTabelaNome.innerHTML = recebivel.nome
+        dadoDaTabelaData.innerHTML = recebivel.data
+        dadoDaTabelaValor.innerHTML = recebivel.valor
+
+        novaLinhaDaTabela.appendChild(dadoDaTabelaNome)
+        novaLinhaDaTabela.appendChild(dadoDaTabelaData)
+        novaLinhaDaTabela.appendChild(dadoDaTabelaValor)
+
+        tabeladepesquisa.appendChild(novaLinhaDaTabela)
+    }
 }

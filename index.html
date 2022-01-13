@@ -8,6 +8,9 @@
     <link rel="stylesheet" href="./style.css">
 </head>
 <body>
+    <h1>Calculadora de Juros de Joana</h1>
+    <div class="tabelas">
+        <div class="tabeladeentrada">
     <form onsubmit="adicionar(event)">
         <input type="text" id="nome" placeholder="Nome">
         <input type="date" id="data" placeholder="Data de vencimento">
@@ -16,12 +19,27 @@
     </form>
     <table id="tabela">
         <tr>
-            <th>Nome</th>
-            <th>Vencimento</th>
-            <th>Valor</th>
+            <th>Valor salvo</th>
         </tr>
     </table>
     <button onclick="implementarJuros()">Calcular Juros</button>
+    </div>
+    <div class="tabeladepesquisa">
+    <form onsubmit="pesquisar(event)">
+        <input type="date" id="dataDeInicio" placeholder="Data De Inicio">
+        <input type="date" id="dataDeFim" placeholder="Data de finalização">
+        <input type="number" id="valorMinimo" placeholder="Valor Mínimmo">
+        <input type="number" id="valorMaximo" placeholder="Valor Máximo">
+        <button>Filtrar</button>
+    </form>
+    <table id="tabelaPesquisa">
+        <tr>
+            <th>resultado De Pesquisa</th>
+        </tr>
+    </table>
+    </div>  
+</div>
+    
     <script src="./index.js"></script>
 </body>
 </html>
